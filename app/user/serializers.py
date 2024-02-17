@@ -1,7 +1,7 @@
 """
 Serializers for the user API View.
 Serializers are the way to convert objects to and from Python objects,
-it takes json input may be from POST method of API, validates it and 
+it takes json input may be from POST method of API, validates it and
 converts it to model in our database or Python object.
 """
 from django.contrib.auth import (
@@ -24,13 +24,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create a new user with encrypted password and return it."""
         return get_user_model().objects.create_user(**validated_data)
-    
+
     def update(self, instance, validated_data):
         """
         Update a user, setting the password correctly and return it.
         Overriding the update method on UserSerializer and update method is
-        called whenever we perform update actions on the model that the serializer
-        represents.
+        called whenever we perform update actions on the model that
+        the serializer represents.
         """
         password = validated_data.pop('password', None)
         user = super().update(instance, validated_data)
