@@ -27,7 +27,8 @@ from recipe import serializers
             # OpenApiParameter(
             #     'ingredients',
             #     OpenApiTypes.STR,
-            #     description='Comma separated list of ingredient IDs to filter',
+            #     description='Comma separated list of 
+            # ingredient IDs to filter',
             # ),
         ]
     )
@@ -58,7 +59,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return queryset.filter(
             user=self.request.user
         ).order_by('-id').distinct()
-    
+
     def get_serializer_class(self):
         """Return appropriate serializer class for request"""
         if self.action == 'list':
@@ -67,7 +68,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return serializers.RecipeImageSerializer
 
         return self.serializer_class
-    
+
     def perform_create(self, serializer):
         """Create a new recipe."""
         serializer.save(user=self.request.user)
@@ -122,5 +123,3 @@ class TagViewSet(BaseRecipeAttrViewSet):
     """Manage tags in the database."""
     serializer_class = serializers.TagSerializer
     queryset = Tag.objects.all()
-
-

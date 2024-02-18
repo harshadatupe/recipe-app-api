@@ -22,9 +22,11 @@ def detail_url(recipe_id):
     """Return recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
 
+
 def image_upload_url(recipe_id):
     """Create and return an image upload URL."""
     return reverse('recipe:recipe-upload-image', args=[recipe_id])
+
 
 def create_recipe(user, **params):
     """Create and return a sample recipe."""
@@ -38,6 +40,7 @@ def create_recipe(user, **params):
     defaults.update(params)
 
     return Recipe.objects.create(user=user, **defaults)
+
 
 def create_user(**params):
     """Create and return a new user."""
@@ -110,7 +113,7 @@ class PrivateRecipeApiTests(TestCase):
             'price': Decimal('5.99')
         }
         # POST request will look like: /api/recipes/recipe
-        res = self.client.post(RECIPES_URL, payload) 
+        res = self.client.post(RECIPES_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=res.data['id'])
@@ -126,7 +129,7 @@ class PrivateRecipeApiTests(TestCase):
             title='Sample recipe title',
             link=original_link,
         )
-        
+
         payload = {'title': 'New recipe title'}
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload)
@@ -155,7 +158,7 @@ class PrivateRecipeApiTests(TestCase):
         }
         url = detail_url(recipe.id)
         res = self.client.put(url, payload)
-        
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         recipe.refresh_from_db()
         for key, value in payload.items():
@@ -279,7 +282,7 @@ class PrivateRecipeApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.tags.count(), 0)
-    
+
     def test_filter_by_tags(self):
         """Test filtering recipes by tags."""
         r1 = create_recipe(user=self.user, title='Thai Vegetable Curry')
@@ -345,12 +348,12 @@ class ImageUploadTests(TestCase):
             image_file.seek(0)
             payload = {'image': image_file}
             res = self.client.post(url, payload, format='multipart')
-        
+
         self.recipe.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn('image', res.data)
         self.assertTrue(os.path.exists(self.recipe.image.path))
-    
+
     def test_upload_image_bad_request(self):
         """Test uploading an invalid image."""
         url = image_upload_url(self.recipe.id)
@@ -358,9 +361,3 @@ class ImageUploadTests(TestCase):
         res = self.client.post(url, payload, format='multipart')
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-        
-
-
-
